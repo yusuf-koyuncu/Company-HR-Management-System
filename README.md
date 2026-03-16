@@ -68,14 +68,14 @@ erDiagram
         NUMBER AMOUNT
     }
 
-    EMPLOYEE }o--|| DEPARTMENT : "çalışır"
-    DEPARTMENT |o--o| EMPLOYEE : "yönetilir"
-    DEPT_LOCATIONS }o--|| DEPARTMENT : "konumu"
-    PROJECT }o--|| DEPARTMENT : "ait"
-    DEPENDENT }o--|| EMPLOYEE : "bağlı"
-    WORKS_ON }o--|| EMPLOYEE : "çalışır"
-    WORKS_ON }o--|| PROJECT : "üzerinde"
-    ORDERS }o--|| USERS : "verir"
+    EMPLOYEE }o--|| DEPARTMENT : "works in"
+    DEPARTMENT |o--o| EMPLOYEE : "managed by"
+    DEPT_LOCATIONS }o--|| DEPARTMENT : "location"
+    PROJECT }o--|| DEPARTMENT : "belongs to"
+    DEPENDENT }o--|| EMPLOYEE : "dependent of"
+    WORKS_ON }o--|| EMPLOYEE : "works"
+    WORKS_ON }o--|| PROJECT : "on"
+    ORDERS }o--|| USERS : "places"
 ```
 
 ## ⚙️ Kurulum
