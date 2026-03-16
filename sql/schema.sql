@@ -142,3 +142,21 @@ BEGIN
     COMMIT;
 END;
 /
+
+-- ============================================
+-- PERFORMANCE OPTIMIZATION & DATA INTEGRITY
+-- ============================================
+-- Indexes for query performance
+CREATE INDEX idx_employee_dept ON EMPLOYEE(DEPTNO);
+CREATE INDEX idx_project_location ON PROJECT(PLOCATION);
+CREATE INDEX idx_department_name ON DEPARTMENT(DNAME);
+CREATE INDEX idx_orders_user ON ORDERS(USER_ID);
+
+-- Advanced CHECK constraints
+ALTER TABLE EMPLOYEE ADD CONSTRAINT CK_SALARY CHECK (SALARY >= 2000);
+ALTER TABLE EMPLOYEE ADD CONSTRAINT CK_SEX CHECK (SEX IN ('M', 'F', 'O'));
+ALTER TABLE WORKS_ON ADD CONSTRAINT CK_HOURS CHECK (HOURS >= 0 AND HOURS <= 40);
+
+-- RBAC Role Definition (Conceptual)
+-- CREATE ROLE HR_MANAGER;
+-- GRANT SELECT, INSERT, UPDATE ON EMPLOYEE TO HR_MANAGER;
