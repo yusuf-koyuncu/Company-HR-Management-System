@@ -1,21 +1,24 @@
-# 🏢 Şirket & İK Yönetim Sistemi Veritabanı
+# 🏢 Company HR Management System
 
-Oracle SQL ile geliştirilmiş kurumsal bir insan kaynakları veritabanı şeması. Çalışan, departman, proje ve sipariş yönetimini kapsar.
+An Oracle SQL schema for a company's human resources data. It covers employees, departments, projects, dependents and user orders.
 
-## 📋 Tablolar
+![Oracle](https://img.shields.io/badge/Oracle_SQL-F80000?style=for-the-badge&logo=oracle&logoColor=white)
+![PL/SQL](https://img.shields.io/badge/PL%2FSQL-F80000?style=for-the-badge&logo=oracle&logoColor=white)
 
-| Tablo | Açıklama |
+## 📋 Tables
+
+| Table | Description |
 |---|---|
-| `USERS` | Sisteme kayıtlı kullanıcılar |
-| `DEPARTMENT` | Şirket departmanları ve yöneticileri |
-| `EMPLOYEE` | Çalışan bilgileri |
-| `DEPT_LOCATIONS` | Departman lokasyonları |
-| `PROJECT` | Projeler ve atandıkları departmanlar |
-| `DEPENDENT` | Çalışanların bakmakla yükümlü oldukları kişiler |
-| `WORKS_ON` | Çalışan-Proje atamaları |
-| `ORDERS` | Kullanıcı siparişleri |
+| `USERS` | Registered users |
+| `DEPARTMENT` | Company departments and their managers |
+| `EMPLOYEE` | Employee information |
+| `DEPT_LOCATIONS` | Department locations |
+| `PROJECT` | Projects and the departments they belong to |
+| `DEPENDENT` | People dependent on each employee |
+| `WORKS_ON` | Employee-to-project assignments |
+| `ORDERS` | User orders |
 
-## 🗺️ ER Diyagramı
+## 🗺️ ER diagram
 
 ```mermaid
 erDiagram
@@ -78,71 +81,64 @@ erDiagram
     ORDERS }o--|| USERS : "places"
 ```
 
-## ⚙️ Kurulum
+## 🛠️ Schema objects
 
-### Gereksinimler
-- Oracle Database (19c veya üzeri önerilir)
-- Oracle SQL Developer veya SQL*Plus
+### View: `V_EMPLOYEE_REPORT`
+A report view with each employee's department, salary, number of dependents and total working hours.
 
-### Çalıştırma Sırası
+### Trigger: `TRG_CHECK_SALARY`
+Prevents an employee's salary from dropping below 2000.
 
-> ⚠️ Önce `schema.sql`, sonra `data.sql` çalıştırılmalıdır.
-
-```bash
-# SQL*Plus ile
-@schema.sql
-@data.sql
-```
-
-SQL Developer kullanıyorsanız dosyaları sırasıyla açıp **F5** ile çalıştırın.
-
-## 🗂️ Dosya Yapısı
-
-```
-├── schema.sql   # Tablo tanımları, FK'lar, View, Trigger, Procedure
-└── data.sql     # Örnek test verileri
-```
-
----
-
-## 📂 Project Architecture & Source Files
-
-Veritabanı şeması ve test veri setine aşağıdaki bağlantılardan doğrudan erişilebilir:
-
-* 📄 **[schema.sql](./sql/schema.sql)**: Core Schema, Constraints, Views & Triggers.
-* 📄 **[data.sql](./sql/data.sql)**: Comprehensive Sample Data Set.
-
----
-
-## ⚡ System Optimization & Security Standards
-
-Bu proje, kurumsal veri yönetimi standartlarına (Enterprise Standards) uygun olarak optimize edilmiştir:
-
-### 🚀 Performance Optimization (Indexing)
-Sorgu maliyetlerini (Query Cost) minimize etmek ve veri erişim hızını artırmak amacıyla stratejik **B-Tree Index** yapıları kurgulanmıştır:
-- `idx_employee_dept`: Departman bazlı raporlamalarda JOIN performansını artırır.
-- `idx_project_location`: Lokasyon tabanlı filtrelemelerde arama süresini optimize eder.
-
-### 🛡️ Security & Data Integrity
-- **RBAC (Role-Based Access Control):** Sistem, "Least Privilege" (En Düşük Yetki) prensibine uygun olarak rol bazlı erişim kontrolü mimarisine hazırdır.
-- **Advanced Constraints:** Veri bütünlüğü; sadece PK/FK ile değil, özel `CHECK` kısıtlamaları ve `NOT NULL` validasyonları ile veritabanı seviyesinde garanti altına alınmıştır.
-
-## 🛠️ Şema Nesneleri
-
-### View — `V_EMPLOYEE_REPORT`
-Çalışanların departman, maaş, bakmakla yükümlü sayısı ve toplam çalışma saati bilgilerini getiren rapor görünümü.
-
-### Trigger — `TRG_CHECK_SALARY`
-Bir çalışanın maaşının 2000 birimin altına düşmesini engeller.
-
-### Procedure — `PR_GIVE_RAISE`
-Belirtilen departmandaki tüm çalışanlara yüzde bazlı zam uygular.
+### Procedure: `PR_GIVE_RAISE`
+Applies a percentage raise to every employee in a department.
 
 ```sql
--- Kullanım örneği: 1 numaralı departmana %10 zam
+-- Example: give department 1 a 10% raise
 EXEC PR_GIVE_RAISE(1, 10);
 ```
 
-## 👤 Yazar
+## ⚡ Performance and data integrity
 
-**Yusuf Koyuncu** — 2026
+**B-tree indexes** speed up joins and filters:
+
+| Index | Purpose |
+|---|---|
+| `idx_employee_dept` | Department-based reports and joins |
+| `idx_project_location` | Filtering projects by location |
+| `idx_department_name` | Looking up departments by name |
+| `idx_orders_user` | Joining orders to users |
+
+**CHECK constraints** keep the data valid at the database level, together with primary keys, foreign keys and `NOT NULL` rules:
+
+- `CK_SALARY`: salary must be at least 2000
+- `CK_SEX`: sex must be `M`, `F` or `O`
+- `CK_HOURS`: working hours must be between 0 and 40
+
+The end of `schema.sql` also contains a commented-out example of a role-based access setup (`HR_MANAGER`). It is only a sketch and is not applied.
+
+## ⚙️ Setup
+
+### Requirements
+- Oracle Database (19c or later recommended)
+- Oracle SQL Developer or SQL*Plus
+
+### Run order
+
+> ⚠️ Run `schema.sql` first, then `data.sql`.
+
+```bash
+# with SQL*Plus
+@sql/schema.sql
+@sql/data.sql
+```
+
+In SQL Developer, open the files in that order and run each one with **F5**.
+
+## 🗂️ Files
+
+* 📄 **[sql/schema.sql](./sql/schema.sql)**: tables, foreign keys, view, trigger, procedure, indexes and constraints
+* 📄 **[sql/data.sql](./sql/data.sql)**: sample test data
+
+## 👤 Author
+
+**Yusuf Koyuncu**, 2026
